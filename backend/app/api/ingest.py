@@ -221,9 +221,7 @@ def ingest_folder(folder_path: str):
         print(f"\n--- Ingesting: {p}")
         ingest_one_pdf(p)
 
-
-
-# 8) Main
+# 8) Main function
 
 if __name__ == "__main__":
     from pathlib import Path
