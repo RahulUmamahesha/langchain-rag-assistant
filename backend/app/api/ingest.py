@@ -203,7 +203,7 @@ def ingest_one_pdf(pdf_path: str):
     print("Chunks:", len(chunks))
 
     store_in_chroma(chunks, persist_dir=CHROMA_DIR)
-    print(f"✅ Stored {len(chunks)} chunks in Chroma at {CHROMA_DIR}")
+    print(f"Stored {len(chunks)} chunks in Chroma at {CHROMA_DIR}")
 
 
 
