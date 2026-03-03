@@ -1,0 +1,3 @@
+# PDF Ingestion Pipeline: 
+
+# PDF → Load → Split into chunks → Add metadata → Convert to embeddings → Store in ChromaDB
