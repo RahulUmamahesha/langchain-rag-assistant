@@ -106,20 +106,25 @@ def stable_chunk_id(source: str, page: int, chunk_id: int) -> str:
 
 # 2) Embeddings factory
 
+# def get_embeddings():  # you can switch to OpenAIEmbeddings if you have an API key and want to use OpenAI's embedding models  
+#     """
+#     Two modes:
+#       - local (default): sentence-transformers (no API key needed)
+#       - openai: requires OPENAI_API_KEY and available quota
+#     """
+#     if EMBED_PROVIDER == "openai":
+#         from langchain_openai import OpenAIEmbeddings
+#         return OpenAIEmbeddings(model=OPENAI_EMBED_MODEL)
+
+#     # Local embeddings
+#     from langchain_community.embeddings import HuggingFaceEmbeddings
+#     return HuggingFaceEmbeddings(model_name=LOCAL_EMBED_MODEL)
+
+
 def get_embeddings():
-    """
-    Two modes:
-      - local (default): sentence-transformers (no API key needed)
-      - openai: requires OPENAI_API_KEY and available quota
-    """
-    if EMBED_PROVIDER == "openai":
-        from langchain_openai import OpenAIEmbeddings
-        return OpenAIEmbeddings(model=OPENAI_EMBED_MODEL)
-
-    # Local embeddings
+    # Local embeddings (no OpenAI quota needed)
     from langchain_community.embeddings import HuggingFaceEmbeddings
-    return HuggingFaceEmbeddings(model_name=LOCAL_EMBED_MODEL)
-
+    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 
 # 3) Load PDFs
@@ -165,7 +170,11 @@ def split_and_tag(pages) -> List:
 # 5) Store in Chroma
 
 def store_in_chroma(chunks, persist_dir: str = CHROMA_DIR):
-    embeddings = get_embeddings()
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
 
     vectordb = Chroma(
         collection_name="pdf_docs",
@@ -186,7 +195,6 @@ def store_in_chroma(chunks, persist_dir: str = CHROMA_DIR):
     try:
         vectordb.persist()
     except Exception:
-        # Some Chroma versions auto-persist; ignore if persist isn't needed
         pass
 
     return vectordb
@@ -221,7 +229,7 @@ def ingest_folder(folder_path: str):
         print(f"\n--- Ingesting: {p}")
         ingest_one_pdf(p)
 
-# 8) Main function
+# 8) Main function to run when executing this script directly
 
 if __name__ == "__main__":
     from pathlib import Path
