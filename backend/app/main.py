@@ -1,6 +1,13 @@
 from fastapi import FastAPI
 from fastapi import APIRouter
 
+from app.api.routes.query import router as query_router
+
+
+
+
+
+
 app = FastAPI()
 
 router = APIRouter()
@@ -21,6 +28,8 @@ def query(payload: dict):
         "answer": f"You asked: {question}",
         "sources": []
     }
+# include query router
+app.include_router(query_router)
 
 from dotenv import load_dotenv
 import os
